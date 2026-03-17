@@ -30,8 +30,8 @@ class Player(pygame.sprite.Sprite):
         self.animation_count = 0
 
     def move(self, dx, dy):
-        self.x_vel = dx
-        self.y_vel = dy
+        self.rect.x += dx
+        self.rect.y += dy
 
     def move_left(self, vel):
         self.x_vel = -vel
@@ -47,6 +47,7 @@ class Player(pygame.sprite.Sprite):
 
     def loop(self, fps):
         self.move(self.x_vel, self.y_vel)
+    
 
     def draw(self, win):
         pygame.draw.rect(win, self.COLOR, self.rect)
@@ -70,6 +71,16 @@ def draw(window, background, bg_image, player):
     player.draw(window)
     pygame.display.update()
 
+def handle_move(player):
+    keys = pygame.key.get_pressed()
+
+    player.x_vel = 0
+    if keys[pygame.K_LEFT]:
+        player.move_left(PLAYER_VEL)
+    if keys[pygame.K_RIGHT]:
+        player.move_right(PLAYER_VEL)
+
+
 def main(window):
     clock = pygame.time.Clock()
     background, bg_image = get_background("Blue.png")
@@ -85,6 +96,8 @@ def main(window):
                 run = False
                 break
 
+        player.loop(FPS)
+        handle_move(player)
         draw(window, background, bg_image, player)
 
     pygame.quit()
